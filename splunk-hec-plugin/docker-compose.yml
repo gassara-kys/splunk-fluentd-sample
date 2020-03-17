@@ -1,0 +1,27 @@
+version: '3'
+services:
+  fluentd:
+    build: ./fluentd
+    image: fluentd-splunk-example
+    container_name: fluentd-splunk-example
+    volumes:
+      - "./fluentd/log:/fluentd/log"
+      - "./nginx/log:/var/log/nginx"
+    environment:
+      FLUENTD_OPT: "-vv"
+      SPLUNK_HEC_HOST: "${SPLUNK_HEC_HOST}"
+      SPLUNK_HEC_PORT: "${SPLUNK_HEC_PORT}"
+      SPLUNK_HEC_TOKEN: "${SPLUNK_HEC_TOKEN}"
+      SPLUNK_HEC_INDEX: "${SPLUNK_HEC_INDEX}"
+      TZ: "Asia/Tokyo"
+
+  nginx:
+    build: ./nginx
+    image: fluentd-example-nginx
+    container_name: fluentd-example-nginx
+    ports:
+      - "80:80"
+    environment:
+      TZ: "Asia/Tokyo"
+    volumes:
+      - "./nginx/log:/var/log/nginx"
